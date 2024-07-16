@@ -6,7 +6,7 @@ export const SendMoney = () => {
   const [ searchParams ] = useSearchParams();
   const id = searchParams.get("id");
   const name = searchParams.get("name");
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState('');
 
 
   return <div className="flex justify-center h-screen bg-gray-100">
@@ -34,6 +34,7 @@ export const SendMoney = () => {
             <input onChange={(e) => {
               setAmount(e.target.value)
             }} 
+            value={amount}
             className="border w-full rounded-lg px-2 py-1 
             border-slate-200" 
             type="number" 
@@ -44,11 +45,13 @@ export const SendMoney = () => {
             axios.post("http://localhost:3000/api/v1/account/transfer", {
               to: id,
               amount
-            }), {
+            }, {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
               }
-            }
+            }).then(() => {
+              setAmount("")
+            })
           }} className="bg-green-600 hover:bg-green-700 focus:ring-4 
         focus:ring-slate-300 text-white text-sm w-full focus:outline-none
           font-medium rounded-lg px-5 py-2.5 me-2 mb-2">Initiate Transfer</button>

@@ -4,15 +4,26 @@ import { useEffect } from "react"
 import axios from "axios"
 import { Button } from "./Button"
 import { useNavigate } from "react-router-dom"
+import {jwtDecode} from 'jwt-decode'
 
 export const UserList = () => {
   const filter = useRecoilValue(filterState)
   const [users, setUsers] = useRecoilState(usersState)
+  const token = localStorage.getItem('token')
+  const decodedToken = jwtDecode(token);
+  const loggedInUserId = decodedToken.userId
 
   useEffect(() => {
     async function fetchUsers() {
-      const response = await axios.get(`http://localhost:3000/api/v1/user/bulk?filter=${filter}`)
-      setUsers(response.data.users)
+      const response = await axios.get(`http://localhost:3000/api/v1/user/bulk?filter=${filter}`,{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      const allUsers = response.data.users;
+      const filteredUsers = allUsers.filter( user => user._id !== loggedInUserId )
+      
+      setUsers(filteredUsers)
     } 
     fetchUsers()
   },[filter, setUsers])
