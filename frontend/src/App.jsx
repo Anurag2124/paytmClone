@@ -3,9 +3,11 @@ import { Signup } from './pages/Signup'
 import { Dashboard } from './pages/Dashboard'
 import { Signin } from './pages/Signin'
 import { SendMoney } from './pages/SendMoney'
+import { RecoilRoot } from 'recoil'
 function App() {
 
   return (
+    <RecoilRoot>
     <BrowserRouter>
       <Routes>
         <Route path='/signup' element = {<Signup/>}/>
@@ -14,6 +16,7 @@ function App() {
         <Route path='/sendMoney' element = {<SendMoney/>}/>
       </Routes>
     </BrowserRouter>
+    </RecoilRoot>
   )
 }
 
