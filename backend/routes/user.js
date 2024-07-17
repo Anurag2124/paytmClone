@@ -13,6 +13,11 @@ const signupBody = zod.object({
   lastName: zod.string()
 })
 
+const signinBody = zod.object({
+  username: zod.string().email(),
+  password: zod.string().min(6)
+})
+
 const updateBody = zod.object({
   password: zod.string().optional(),
   firstName: zod.string().optional(),
@@ -63,10 +68,10 @@ router.post('/signup', async(req,res) => {
 });
 
 router.post('/signin', async(req,res) => {
-  const {success} = signupBody.safeParse(req.body);
+  const {success} = signinBody.safeParse(req.body);
   if (!success){
     return res.status(411).json({
-      message: 'Email already taken / Incorrect inputs'
+      message: 'Incorrect inputs'
     })
   }
 

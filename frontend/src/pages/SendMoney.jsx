@@ -7,6 +7,37 @@ export const SendMoney = () => {
   const id = searchParams.get("id");
   const name = searchParams.get("name");
   const [amount, setAmount] = useState('');
+  const [transfer, setTransfer] = useState('')
+  const [loading , setLoading ] = useState(false)
+
+  const handleOnClick = async() => {
+    if(amount<=0){
+      setTransfer('invalid');
+      setAmount('')
+      setTimeout(() => setTransfer(''),700)
+      return;
+    }
+    setLoading(true)
+    try{
+        await axios.post("http://localhost:3000/api/v1/account/transfer", {
+          to: id,
+          amount
+        }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+        }).then(() => {
+          setAmount("");
+          setTransfer('success');
+          setTimeout(() => setTransfer(''),2000)
+        })
+      }catch(error){
+      console.log(error);
+      setTransfer('failure');
+    }finally{
+      setLoading(false)
+    }
+  }
 
 
   return <div className="flex justify-center h-screen bg-gray-100">
@@ -41,21 +72,14 @@ export const SendMoney = () => {
             placeholder="Enter amount"/>
           </div>
 
-          <button onClick={() => {
-            axios.post("http://localhost:3000/api/v1/account/transfer", {
-              to: id,
-              amount
-            }, {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-              }
-            }).then(() => {
-              setAmount("")
-            })
-          }} className="bg-green-600 hover:bg-green-700 focus:ring-4 
+          <button onClick={handleOnClick} className="bg-green-600 hover:bg-green-700 focus:ring-4 
         focus:ring-slate-300 text-white text-sm w-full focus:outline-none
-          font-medium rounded-lg px-5 py-2.5 me-2 mb-2">Initiate Transfer</button>
+          font-medium rounded-lg px-5 py-2.5 me-2 ">{loading ? 'Processing...' : 'Initiate Transfer'}</button>
+        {transfer === 'success' && <p className="text-green-500 pt-6 text-sm mx-auto">Transfer Successful</p>}
+        {transfer === 'failure' && <p className="text-red-500 pt-6 text-sm mx-auto">Transfer Failed</p>}
+        {transfer === 'invalid' && <p className="text-red-500 pt-6 text-sm mx-auto">Invalid amount</p>}
         </div>
+
 
         </div>
     </div>
