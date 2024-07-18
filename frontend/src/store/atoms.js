@@ -5,6 +5,11 @@ export const usersState = atom({
   default: []
 })
 
+export const loggedInUserState = atom({
+  key: 'loggedInUserState',
+  default: {}
+})
+
 export const filterState = atom({
   key: 'filterState',
   default: ''
